@@ -2,8 +2,18 @@
 
 export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 
-./resin-wifi-connect --clear=false
+printf "Checking if we are connected to the internet via a google ping...\n\n"
+wget --spider http://google.com 2>&1
+if [ $? -eq 0 ]; then
+  	printf "\nconnected to internet, skipping wifi-connect\n\n"
+else
+  	printf "\nnot connected, starting wifi-connect\n\n"
+  	# Launch resin-wifi-connect, the --clear true will tell to always
+	# clear any active or already setup connections on start up.
+	./resin-wifi-connect --clear=true
+fi
 
+# Start your application logic here, after a connection is setup
 while true; do
 	sleep 100
 done
