@@ -1,0 +1,20 @@
+FROM resin/%%RESIN_MACHINE_NAME%%-debian
+
+ENV INITSYSTEM on
+
+RUN apt-get update \
+	&& apt-get install -y dnsmasq \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /usr/src/app/
+
+WORKDIR /usr/src/app
+
+RUN curl https://api.github.com/repos/majorz/resin-wifi-connect/releases/latest -s \
+    | grep -hoP '%%RESIN_ARCH%%.tar.gz\]\(\K[^) ]*' \
+    | xargs -n1 curl -Ls \
+	| tar -xvz -C /usr/src/app/
+
+COPY start /usr/src/app/
+
+CMD bash start
