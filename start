@@ -3,8 +3,8 @@
 export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 
 printf "Checking if we are connected to the internet via a google ping...\n\n"
-wget --spider http://google.com 2>&1
-if [ $? -eq 0 ]; then
+if curl --silent --head http://www.google.com/  |egrep "20[0-9] Found|30[0-9] Found" >/dev/null; 
+then
   	printf "\nconnected to internet, skipping wifi-connect\n\n"
 else
   	printf "\nnot connected, starting wifi-connect\n\n"
